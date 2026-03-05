@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description"
+        content="Jogo dos Blocos — jogo educacional infantil de palavras com reconhecimento de voz offline" />
+    <meta name="theme-color" content="#11003C" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Jogo dos Blocos 🎮</title>
+    <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════
+       TELA INICIAL  #screen-start
+  ══════════════════════════════════════ -->
+    <section id="screen-start" class="screen active" role="main">
+        <div class="start-card">
+            <span class="mascot mascot-idle" id="mascot" aria-hidden="true">🐱</span>
+
+            <h1 class="game-title">Jogo dos<br>Blocos!</h1>
+            <p class="game-subtitle">Leia a palavra em voz alta<br>antes que o bloco caia!</p>
+
+            <!-- Seleção de turma -->
+            <div class="grade-section" aria-label="Selecione sua turma">
+                <p class="grade-title">📚 Selecione sua turma:</p>
+                <div class="grade-grid">
+                    <button class="grade-btn selected" data-grade="ano1" style="--grade-color:#FF6B9D"
+                        aria-label="1º Ano">
+                        <span class="grade-num">1º</span>
+                        <span class="grade-label-text">Ano</span>
+                        <span class="grade-hint">Monossílabas</span>
+                    </button>
+                    <button class="grade-btn" data-grade="ano2" style="--grade-color:#5BAEFF" aria-label="2º Ano">
+                        <span class="grade-num">2º</span>
+                        <span class="grade-label-text">Ano</span>
+                        <span class="grade-hint">Dissílabas</span>
+                    </button>
+                    <button class="grade-btn" data-grade="ano3" style="--grade-color:#00D68F" aria-label="3º Ano">
+                        <span class="grade-num">3º</span>
+                        <span class="grade-label-text">Ano</span>
+                        <span class="grade-hint">Trissílabas</span>
+                    </button>
+                    <button class="grade-btn" data-grade="ano4" style="--grade-color:#F7D000" aria-label="4º Ano">
+                        <span class="grade-num">4º</span>
+                        <span class="grade-label-text">Ano</span>
+                        <span class="grade-hint">Polissílabas</span>
+                    </button>
+                    <button class="grade-btn" data-grade="ano5" style="--grade-color:#9B59B6" aria-label="5º Ano">
+                        <span class="grade-num">5º</span>
+                        <span class="grade-label-text">Ano</span>
+                        <span class="grade-hint">Compostos</span>
+                    </button>
+                </div>
+                <p id="grade-desc" class="grade-desc">1º Ano — Monossílabas</p>
+            </div>
+
+            <button id="btn-start" class="btn-primary" aria-label="Começar o jogo">
+                ▶ Jogar!
+            </button>
+        </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════
+       TELA DO JOGO  #screen-game
+  ══════════════════════════════════════ -->
+    <section id="screen-game" class="screen" aria-label="Jogo em andamento">
+
+        <!-- HUD: placar -->
+        <div id="hud" role="status" aria-live="polite">
+            <div class="hud-block">
+                <span class="hud-label">Pontos</span>
+                <span class="hud-value" id="hud-score">0</span>
+            </div>
+            <div class="hud-block">
+                <span id="hud-grade"></span>
+                <span id="hud-combo" aria-label="Combo"></span>
+            </div>
+            <div class="hud-block">
+                <span class="hud-label">Recorde</span>
+                <span class="hud-value" id="hud-highscore">0</span>
+            </div>
+        </div>
+
+        <!-- Canvas de jogo -->
+        <canvas id="game-canvas" aria-label="Área do jogo"></canvas>
+
+        <!-- Área do microfone -->
+        <div id="mic-area">
+            <button id="mic-btn" data-state="off" aria-label="Ligar / desligar microfone"
+                title="Clique para ligar o microfone">
+                🎤
+            </button>
+            <span id="mic-status">🎤 OFF</span>
+            <span id="partial-text" aria-live="polite" aria-label="Palavra detectada"></span>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+       TELA DE GAME OVER  #screen-gameover
+  ══════════════════════════════════════ -->
+    <section id="screen-gameover" class="screen" aria-label="Fim de jogo">
+        <div class="go-card">
+            <span class="mascot" id="mascot-go" aria-hidden="true">😅</span>
+            <h2 class="go-title">Fim de Jogo!</h2>
+
+            <div aria-label="Sua pontuação">
+                <p style="font-size:13px;color:var(--text-dim);text-align:center;">SUA PONTUAÇÃO</p>
+                <p class="go-score-big" id="go-score">0</p>
+            </div>
+
+            <div class="go-highscore-row">
+                🏆 Recorde: <strong id="go-highscore">0</strong>
+            </div>
+
+            <div class="go-stats">
+                <div class="go-stat">
+                    <span class="go-stat-label">Acertos ✅</span>
+                    <span class="go-stat-value" id="go-cleared">0</span>
+                </div>
+                <div class="go-stat">
+                    <span class="go-stat-label">Erros ❌</span>
+                    <span class="go-stat-value" id="go-missed">0</span>
+                </div>
+            </div>
+
+            <button id="btn-restart" class="btn-primary" aria-label="Jogar novamente">
+                🔄 Jogar Novamente
+            </button>
+            <button id="btn-home" class="btn-secondary" aria-label="Ir para o início" onclick="document.getElementById('screen-gameover').classList.remove('active');
+                 document.getElementById('screen-start').classList.add('active');">
+                🏠 Início
+            </button>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+       FEEDBACK VISUAL (overlay global)
+  ══════════════════════════════════════ -->
+    <div id="feedback" class="feedback" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- ══════════════════════════════════════
+       LOADING OVERLAY (modelo Vosk)
+  ══════════════════════════════════════ -->
+    <div id="loading-overlay" role="status" aria-label="Carregando modelo de voz">
+        <span style="font-size:52px;">🎤</span>
+        <p id="loading-title">Carregando reconhecimento de voz…</p>
+        <div id="loading-track" aria-hidden="true">
+            <div id="loading-bar"></div>
+        </div>
+        <p id="loading-msg">Iniciando…</p>
+        <p style="font-size:11px;color:var(--text-dim);max-width:260px;text-align:center;margin-top:4px;">
+            Tentando carregar o modelo offline Vosk. Se não funcionar em 30s, o jogo usa o reconhecimento de voz do
+            Chrome automaticamente!
+        </p>
+    </div>
+
+    <!-- Entry point ES Module -->
+    <script type="module" src="main.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .catch(e => console.warn('SW não registrado:', e));
+        }
+    </script>
+</body>
+
+</html>
