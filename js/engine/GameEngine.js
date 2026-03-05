@@ -39,6 +39,9 @@ export class GameEngine {
         // Turma selecionada (padrão: 1º Ano)
         this.selectedGrade = "ano1";
 
+        // Nome do jogador
+        this.playerName = "";
+
         // Estado do jogo
         this.blocks = [];
         this._spawnTimer = 0;
@@ -54,6 +57,14 @@ export class GameEngine {
         this._nextSpeedUpAt = 10;
 
         this.particles = [];
+
+        // Imagem de fundo
+        this._bgImage = new Image();
+        this._bgLoaded = false;
+        this._bgImage.onload = () => { this._bgLoaded = true; };
+        this._bgImage.onerror = () => console.warn("[GameEngine] bg_game.png não encontrado.");
+        this._bgImage.src = window.location.origin + "/bg_game.png";
+
         this._bindEvents();
     }
 
@@ -102,15 +113,37 @@ export class GameEngine {
     _bindEvents() {
         // Botão de início
         document.getElementById("btn-start")?.addEventListener("click", () => {
-            if (this.state === "START" || this.state === "GAMEOVER") this.startGame();
+            if (this.state === "START" || this.state === "GAMEOVER") this._tryStartGame();
+        });
+        // Enter no campo de nome também inicia
+        document.getElementById("player-name-input")?.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") this._tryStartGame();
         });
         // Botão de jogar novamente
         document.getElementById("btn-restart")?.addEventListener("click", () => {
-            if (this.state === "GAMEOVER") this.startGame();
+            if (this.state === "GAMEOVER") this._tryStartGame();
         });
-        // Botão de voltar ao menu
-        document.getElementById("btn-menu")?.addEventListener("click", () => {
+        // Botão de voltar ao menu (game over)
+        document.getElementById("btn-home")?.addEventListener("click", () => {
             if (this.state === "GAMEOVER") {
+                this.state = "START";
+                this.ui.showStart();
+            }
+        });
+        // Botão Ranking na tela inicial
+        document.getElementById("btn-ranking")?.addEventListener("click", () => {
+            this.ui.showRanking("start");
+        });
+        // Botão Ranking na tela de Game Over
+        document.getElementById("btn-go-ranking")?.addEventListener("click", () => {
+            this.ui.showRanking("gameover");
+        });
+        // Botão Voltar na tela de Ranking
+        document.getElementById("btn-ranking-back")?.addEventListener("click", () => {
+            const from = this.ui._rankingFromScreen;
+            if (from === "gameover") {
+                this.ui._setScreen("gameover");
+            } else {
                 this.state = "START";
                 this.ui.showStart();
             }
@@ -153,6 +186,23 @@ export class GameEngine {
     // ─────────────────────────────────────────
     // ESTADO DO JOGO
     // ─────────────────────────────────────────
+
+    /** Valida o nome e inicia o jogo se válido. */
+    _tryStartGame() {
+        const input = document.getElementById("player-name-input");
+        const errorEl = document.getElementById("player-name-error");
+        const name = input?.value?.trim() || "";
+        if (!name) {
+            if (errorEl) errorEl.textContent = "⚠️ Por favor, digite seu nome antes de jogar!";
+            input?.focus();
+            input?.classList.add("input-error");
+            return;
+        }
+        if (errorEl) errorEl.textContent = "";
+        if (input) input.classList.remove("input-error");
+        this.playerName = name;
+        this.startGame();
+    }
 
     startGame() {
         const cfg = GRADE_CONFIG[this.selectedGrade];
@@ -200,7 +250,7 @@ export class GameEngine {
         this._playSound("gameover");
 
         const stats = this.score.finalize();
-        this.ui.showGameOver(stats);
+        this.ui.showGameOver(stats, this.selectedGrade, this.playerName);
 
         this.canvas.classList.add("shake");
         setTimeout(() => this.canvas.classList.remove("shake"), 600);
@@ -392,16 +442,22 @@ export class GameEngine {
         const W = this.canvas.width;
         const H = this.canvas.height;
 
-        // Fundo com gradiente animado
-        const grad = ctx.createLinearGradient(0, 0, 0, H);
-        grad.addColorStop(0, "#1A1A3E");
-        grad.addColorStop(0.5, "#2D1B69");
-        grad.addColorStop(1, "#11003C");
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, W, H);
-
-        // Estrelinhas de fundo
-        this._drawStars(ctx, W, H);
+        // Fundo: imagem de cena ou gradiente de fallback
+        if (this._bgLoaded) {
+            ctx.drawImage(this._bgImage, 0, 0, W, H);
+            // Overlay escuro leve para manter legibilidade dos blocos e HUD
+            ctx.fillStyle = "rgba(10, 0, 40, 0.38)";
+            ctx.fillRect(0, 0, W, H);
+        } else {
+            // fallback enquanto a imagem carrega
+            const grad = ctx.createLinearGradient(0, 0, 0, H);
+            grad.addColorStop(0, "#1A1A3E");
+            grad.addColorStop(0.5, "#2D1B69");
+            grad.addColorStop(1, "#11003C");
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
+            this._drawStars(ctx, W, H);
+        }
 
         // Pilha
         this.stack.draw(ctx);

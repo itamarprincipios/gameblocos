@@ -21,7 +21,7 @@
         <div class="start-card">
             <span class="mascot mascot-idle" id="mascot" aria-hidden="true">🐱</span>
 
-            <h1 class="game-title">Jogo dos<br>Blocos!</h1>
+            <h1 class="game-title">Jogo dos Blocos!</h1>
             <p class="game-subtitle">Leia a palavra em voz alta<br>antes que o bloco caia!</p>
 
             <!-- Seleção de turma -->
@@ -58,8 +58,27 @@
                 <p id="grade-desc" class="grade-desc">1º Ano — Monossílabas</p>
             </div>
 
+            <!-- Nome do jogador -->
+            <div class="player-name-section">
+                <label for="player-name-input" class="player-name-label">👤 Seu nome:</label>
+                <input
+                    type="text"
+                    id="player-name-input"
+                    class="player-name-input"
+                    placeholder="Digite seu nome aqui…"
+                    maxlength="20"
+                    autocomplete="off"
+                    spellcheck="false"
+                    aria-label="Nome do jogador"
+                />
+                <p id="player-name-error" class="player-name-error" aria-live="polite"></p>
+            </div>
+
             <button id="btn-start" class="btn-primary" aria-label="Começar o jogo">
                 ▶ Jogar!
+            </button>
+            <button id="btn-ranking" class="btn-secondary" aria-label="Ver ranking">
+                🏆 Ranking
             </button>
         </div>
     </section>
@@ -128,12 +147,46 @@
                 </div>
             </div>
 
+            <!-- Posição no ranking após o jogo -->
+            <div id="go-ranking-msg" class="go-ranking-msg" style="display:none"></div>
+
             <button id="btn-restart" class="btn-primary" aria-label="Jogar novamente">
                 🔄 Jogar Novamente
             </button>
-            <button id="btn-home" class="btn-secondary" aria-label="Ir para o início" onclick="document.getElementById('screen-gameover').classList.remove('active');
-                 document.getElementById('screen-start').classList.add('active');">
-                🏠 Início
+            <div class="go-btn-row">
+                <button id="btn-home" class="btn-secondary" aria-label="Ir para o início">
+                    🏠 Início
+                </button>
+                <button id="btn-go-ranking" class="btn-secondary" aria-label="Ver ranking">
+                    🏆 Ranking
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+       TELA DE RANKING  #screen-ranking
+  ══════════════════════════════════════ -->
+    <section id="screen-ranking" class="screen" aria-label="Ranking">
+        <div class="ranking-card">
+            <h2 class="ranking-title">🏆 Ranking por Turma</h2>
+
+            <!-- Abas de turma -->
+            <div class="ranking-tabs" role="tablist">
+                <button class="ranking-tab active" data-tab="ano1" style="--tab-color:#FF6B9D" role="tab">1º</button>
+                <button class="ranking-tab" data-tab="ano2" style="--tab-color:#5BAEFF" role="tab">2º</button>
+                <button class="ranking-tab" data-tab="ano3" style="--tab-color:#00D68F" role="tab">3º</button>
+                <button class="ranking-tab" data-tab="ano4" style="--tab-color:#F7D000" role="tab">4º</button>
+                <button class="ranking-tab" data-tab="ano5" style="--tab-color:#9B59B6" role="tab">5º</button>
+            </div>
+
+            <!-- Lista de ranking -->
+            <div id="ranking-list" class="ranking-list" role="list">
+                <!-- Preenchido via JS -->
+            </div>
+
+            <button id="btn-ranking-back" class="btn-secondary" aria-label="Voltar ao início">
+                ← Voltar
             </button>
         </div>
     </section>

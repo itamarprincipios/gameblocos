@@ -324,7 +324,9 @@ body {
 
 /* ─── START SCREEN ─── */
 #screen-start {
-  background: radial-gradient(ellipse at center, #2D1B69 0%, #11003C 70%);
+  background:
+    linear-gradient(rgba(10, 0, 40, 0.42), rgba(10, 0, 40, 0.42)),
+    url("bg_start.png") center center / cover no-repeat;
   gap: 0;
 }
 
@@ -334,14 +336,14 @@ body {
   align-items: center;
   gap: 20px;
   padding: 40px 36px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: radial-gradient(ellipse at center, #2D1B69 0%, #11003C 85%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 32px;
   backdrop-filter: blur(12px);
   box-shadow: var(--shadow);
-  max-width: 420px;
+  max-width: 500px;
   width: 90%;
-  zoom: 1.44;
+  zoom: 1.5;
 }
 
 .game-title {
@@ -621,8 +623,9 @@ body {
   border-radius: 32px;
   backdrop-filter: blur(12px);
   box-shadow: var(--shadow);
-  max-width: 340px;
-  width: 90%;
+  max-width: 500px;
+  width: 100%;
+  zoom: 1.5;
 }
 
 .go-title {
@@ -685,6 +688,244 @@ body {
   color: var(--yellow);
   font-family: 'Fredoka One', cursive;
   font-size: 20px;
+}
+
+/* ─── PLAYER NAME INPUT ─── */
+.player-name-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.player-name-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+}
+
+.player-name-input {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  caret-color: var(--pink);
+}
+
+.player-name-input::placeholder {
+  color: rgba(176, 168, 208, 0.5);
+  font-weight: 400;
+}
+
+.player-name-input:focus {
+  border-color: var(--pink);
+  background: rgba(255, 107, 157, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.2);
+}
+
+.player-name-input.input-error {
+  border-color: #FF4757;
+  box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.2);
+  animation: input-shake 0.35s ease;
+}
+
+@keyframes input-shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-6px);
+  }
+
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.player-name-error {
+  font-size: 11px;
+  color: #FF7F8A;
+  min-height: 14px;
+  font-weight: 700;
+}
+
+/* ─── GAME OVER RANKING MSG ─── */
+.go-ranking-msg {
+  background: linear-gradient(135deg, rgba(247, 208, 0, 0.2), rgba(255, 159, 28, 0.2));
+  border: 2px solid var(--yellow);
+  border-radius: 14px;
+  padding: 10px 18px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 17px;
+  color: var(--yellow);
+  text-align: center;
+  box-shadow: 0 0 20px rgba(247, 208, 0, 0.3);
+  animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ─── GAME OVER BUTTON ROW ─── */
+.go-btn-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.go-btn-row .btn-secondary {
+  flex: 1;
+  font-size: 15px;
+  padding: 10px 16px;
+}
+
+/* ─── RANKING SCREEN ─── */
+#screen-ranking {
+  background: radial-gradient(ellipse at center, #1E0B5E 0%, #0A0022 70%);
+  overflow-y: auto;
+}
+
+.ranking-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 28px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  max-width: 500px;
+  width: 100%;
+  zoom: 1.8;
+}
+
+.ranking-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 28px;
+  background: linear-gradient(135deg, var(--yellow), var(--orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+}
+
+/* ─── RANKING TABS ─── */
+.ranking-tabs {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ranking-tab {
+  font-family: 'Fredoka One', cursive;
+  font-size: 16px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.ranking-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.ranking-tab.active {
+  border-color: var(--tab-color);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--tab-color);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--tab-color) 60%, transparent);
+}
+
+/* ─── RANKING LIST ─── */
+.ranking-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 120px;
+}
+
+.ranking-entry {
+  display: grid;
+  grid-template-columns: 36px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: background 0.15s;
+}
+
+.ranking-entry.ranking-top {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.13);
+}
+
+.ranking-pos {
+  font-family: 'Fredoka One', cursive;
+  font-size: 20px;
+  text-align: center;
+}
+
+.ranking-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ranking-score {
+  font-family: 'Fredoka One', cursive;
+  font-size: 18px;
+  color: var(--yellow);
+  text-shadow: 0 0 10px rgba(247, 208, 0, 0.5);
+  white-space: nowrap;
+}
+
+.ranking-date {
+  font-size: 10px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+.ranking-empty {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.7;
+  padding: 24px 0;
 }
 
 /* ─── RESPONSIVE ─── */
